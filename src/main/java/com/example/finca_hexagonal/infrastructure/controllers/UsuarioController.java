@@ -18,6 +18,11 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+    @PostMapping
+    public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioRequestDTO dto) {
+        UsuarioResponseDTO response = usuarioService.crearUsuario(dto);
+        return ResponseEntity.created(URI.create("/api/usuarios/" + response.getId())).body(response);
+    }
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
@@ -25,10 +30,28 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> create(@RequestBody UsuarioRequestDTO dto) {
-        UsuarioResponseDTO response = usuarioService.crearUsuario(dto);
-        return ResponseEntity.created(URI.create("/api/usuarios/" + response.getId())).body(response);
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Long id) {
+        UsuarioResponseDTO response = usuarioService.obtenerUsuarioPorId(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<UsuarioResponseDTO> update(@RequestBody UsuarioRequestDTO dto) {
+        UsuarioResponseDTO response = usuarioService.actualizarUsuario(dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Boolean> delete(@RequestBody UsuarioRequestDTO dto) {
+        usuarioService.eliminarUsuario(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(Long id) {
+        Boolean response = usuarioService.eliminarUsuarioPorId(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
